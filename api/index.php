@@ -1,7 +1,7 @@
 <?php
 // phpinfo();
 $file = "./upload_log.log";
-$fele = "./upload.log";
+$fele = "./upload_l.log";
  
 echo "<br>$file 当前权限".substr(sprintf('%o',fileperms($file)), -3);
 echo "<br>$fele 当前权限".substr(sprintf('%o',fileperms($fele)), -3);
