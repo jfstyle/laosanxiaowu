@@ -646,6 +646,7 @@
     						// 定义上传完成后的回调函数
     						xhr.onload = function () {
     							if (xhr.readyState == 4 && xhr.status == 200) {
+								console.log(xhr);
     								console.log('上传成功');
     							} else {
     								console.log('出错了');
