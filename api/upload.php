@@ -49,15 +49,8 @@
         }
         //设置图片保存路径
         $path = "/photo";
-
-        //判断目录是否存在 不存在就创建
-        if (!is_dir($path)){
-            mkdir($path,0777,true);
-        }
-
         //图片路径
         $imageSrc= $path."/". $imageName;
-
         //生成文件夹和图片
         $r = file_put_contents($imageSrc, base64_decode($image));
         if (!$r) {
