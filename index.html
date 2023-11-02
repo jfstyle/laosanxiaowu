@@ -312,7 +312,8 @@
 			<button id="helix" >螺旋</button>
 			<button id="grid" >网格</button>
 			<button id="musicyy" >音乐</button>
-			<button id="save" >保存</button>
+			<button id="upload" >上传</button>
+			<!-- <button id="save" >保存</button> -->
 			<button id="shan" >设置</button>
 		</div>
 		<div id='popup'></div>
@@ -622,6 +623,40 @@
 
 				transform(targets.table, 2000);
 			}
+
+			
+			var upload = document.getElementById( 'upload' );
+			upload.addEventListener('click', function (event) { 
+				var input = document.createElement('input');
+                    input.setAttribute('type', 'file')
+                    input.setAttribute('accept', 'image/*')
+    				input.setAttribute('multiple', 'multiple')
+                    input.addEventListener('change', function(e) {
+                      var files = e.target.files;
+                      // 检查是否支持FormData
+    					if(window.FormData) {
+    						var formData = new FormData();
+    						// 建立一个upload表单项，值为上传的文件
+    						for(var i=0;i<files.length;i++){
+                    				formData.append('files[]',files[i]);
+                    		}
+    						formData.append('action', 'upload');
+    						var xhr = new XMLHttpRequest();
+    						xhr.open('POST', 'api/upload.php', true);
+    						// 定义上传完成后的回调函数
+    						xhr.onload = function () {
+    							if (xhr.readyState == 4 && xhr.status == 200) {
+    								console.log('上传成功');
+    							} else {
+    								console.log('出错了');
+    							}
+    						};
+    						xhr.send(formData);
+    					}
+                    });
+                input.click();
+			});
+
 			var button = document.getElementById( 'save' );
 				button.addEventListener('click', function (event) {
 					// html2canvas(document.body).then(function(canvas) {
