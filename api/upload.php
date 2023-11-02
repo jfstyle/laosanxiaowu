@@ -59,7 +59,8 @@
             return json(['code'=>1,'message'=>'图片生成成功']);
         }
     }else{
-        return json(['code'=>0,'message'=>'没有找到接口']);
+        
+        return json(['code'=>0,'message'=>'没有找到接口'.__FILE__]);
     }
 
 ?>
