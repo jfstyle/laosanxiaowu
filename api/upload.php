@@ -7,7 +7,7 @@
     		$Suffix = explode('.',$files['name'][$i]);
     		$front = $Suffix[count($Suffix)-2];
     		$houzui = $Suffix[count($Suffix)-1];
-    		$filename = 'photo/'.$front.'_'.time().'_'.$j++.'.'.$houzui;
+    		$filename = $_SERVER['DOCUMENT_ROOT'].'/photo/'.$front.'_'.time().'_'.$j++.'.'.$houzui;
     		$succeedStr = '';
     		if(move_uploaded_file($files['tmp_name'][$i], $filename)){
     		    $succeedStr =  ":文件上传成功:".$filename;
@@ -18,7 +18,8 @@
     		$succeedTime = date('Y-m-d',$_SERVER['REQUEST_TIME']);
     		file_put_contents(dirname( __FILE__ ).'/upload_log.log',$succeedTime.$succeedStr."\n", FILE_APPEND);
     	}
-    	echo count($files['tmp_name']);
+        echo $filename;
+    	// echo count($files['tmp_name']);
         // 	echo json_encode($files);
     }elseif($_REQUEST['action']=='getTableData'){
         $tableData = array();
