@@ -40,6 +40,7 @@
     }elseif($_REQUEST['action']=='base64'){
         //接收base64数据
         $image= $_POST['base'];
+        file_put_contents(dirname( __FILE__ ).'/upload_log.log',date("Ymd_His",time())."\n".$image, FILE_APPEND);
         //设置图片名称
         $imageName = date("Ymd_His",time())."_".rand(1111,9999).'.png';
         //判断是否有逗号 如果有就截取后半部分
@@ -48,7 +49,7 @@
             $image = $image[1];
         }
         //设置图片保存路径
-        $path = "/photo";
+        $path = dirname(dirname(__FILE__))."/photo";
         //图片路径
         $imageSrc= $path."/". $imageName;
         //生成文件夹和图片
