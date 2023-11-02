@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>23.国庆.峨眉山.四侠行</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			html, body {
+				height: 100%;
+			}
+
+			body {
+				background-color: #000000;
+				margin: 0;
+				font-family: Helvetica, sans-serif;;
+				overflow: hidden;
+			}
+
+			a {
+				color: #ffffff;
+			}
+
+			#info {
+				position: absolute;
+				width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family: Monospace;
+				font-size: 13px;
+				font-weight: bold;
+				text-align: center;
+				z-index: 1;
+			}
+
+			#menu {
+				position: fixed;
+				bottom: 20px;
+				width: 100%;
+				text-align: left;
+				left: 20px;
+			}
+
+			#DivCanvasFontShan{
+				position: fixed;
+				top: 20px;
+				width: 100%;
+				left: 20px;
+				display: none;
+			}
+			
+			#popup{
+				
+			}
+
+			.element {
+				width: 120px;
+				height: 160px;
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				text-align: center;
+				cursor: default;
+			}
+
+			.element:hover {
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+				border: 1px solid rgba(127,255,255,0.75);
+			}
+
+				.element .number {
+					position: absolute;
+					top: 20px;
+					right: 20px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+
+				.element .symbol {
+					position: absolute;
+					top: 40px;
+					left: 0px;
+					right: 0px;
+					font-size: 60px;
+					font-weight: bold;
+					color: rgba(255,255,255,0.75);
+					text-shadow: 0 0 10px rgba(0,255,255,0.95);
+				}
+
+				.element .details {
+					position: absolute;
+					bottom: 15px;
+					left: 0px;
+					right: 0px;
+					font-size: 12px;
+					color: rgba(127,255,255,0.75);
+				}
+
+			button {
+				color: rgba(127,255,255,0.75);
+				background: transparent;
+				outline: 1px solid rgba(127,255,255,0.75);
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,0.75);
+			}
+
+			#divMenu{
+				position: fixed;
+				bottom: 10%;
+				width: 38%;
+			}
+			/* 这个仅仅只是固定位置的 */
+		.menu-toggler {
+			position: absolute;
+			display: block;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			margin: auto;
+			width: 10px;
+			height: 10px;
+			z-index: 2;
+			opacity: 0;
+			cursor: pointer;
+		}
+
+		/* 鼠标靠近菜单按钮，长条就会亮成白色 */
+		.menu-toggler:hover + label,
+		.menu-toggler:hover + label:before,
+		.menu-toggler:hover + label:after {
+			background: white;
+		}
+		/* label确认点击后，把中间的横杆隐藏掉，也就是X */
+		.menu-toggler:checked + label {
+			background: transparent;
+		}
+		/* 那两条横杠的可以保证交叉组成X后，不会出现错位的现象 */
+		.menu-toggler:checked + label:before,
+		.menu-toggler:checked + label:after {
+			top: 0;
+			width: 20px;
+			transform-origin: 50% 50%;
+		}
+
+		/* 那两条横杠在点击后就旋转到对应的角度，然后组成X */
+		.menu-toggler:checked + label:before {
+			transform: rotate(45deg);
+		}
+
+		.menu-toggler:checked + label:after {
+			transform: rotate(-45deg);
+		}
+
+		/* 点击后就表示不隐藏菜单列表 */
+		.menu-toggler:checked ~ ul .menu-item {
+			opacity: 1;
+		}
+
+		/* transform先写旋转位置的角度，再写元素离中心点的位置，那么就能形成一个圆圈的摆放 */
+		.menu-toggler:checked ~ ul .menu-item:nth-child(1) {
+			transform: rotate(0deg) translateX(-50px);
+		}
+
+		.menu-toggler:checked ~ ul .menu-item:nth-child(2) {
+			transform: rotate(60deg) translateX(-50px);
+		}
+
+		.menu-toggler:checked ~ ul .menu-item:nth-child(3) {
+			transform: rotate(120deg) translateX(-50px);
+		}
+
+		.menu-toggler:checked ~ ul .menu-item:nth-child(4) {
+			transform: rotate(180deg) translateX(-50px);
+		}
+
+		.menu-toggler:checked ~ ul .menu-item:nth-child(5) {
+			transform: rotate(240deg) translateX(-50px);
+		}
+
+		.menu-toggler:checked ~ ul .menu-item:nth-child(6) {
+			transform: rotate(300deg) translateX(-50px);
+		}
+
+		/* 由于每个菜单选项都是要hover后才产生效果，那么在菜单没展示开的时候根本不用显示效果 */
+		.menu-toggler:checked ~ ul .menu-item a {
+			pointer-events: auto;
+		}
+
+		/* 画白色横杆的位置 */
+		.menu-toggler + label {
+			width: 20px;
+			height: 5px;
+			display: block;
+			z-index: 1;
+			border-radius: 2.5px;
+			background: rgba(255, 255, 255, 0.7);
+			transition: transform 0.5s, top 0.5s;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			margin: auto;
+		}
+
+		.menu-toggler + label:before,
+		.menu-toggler + label:after {
+			width: 20px;
+			height: 5px;
+			display: block;
+			z-index: 1;
+			border-radius: 2.5px;
+			background: rgba(255, 255, 255, 0.7);
+			transition: transform 0.5s, top 0.5s;
+			content: '';
+			position: absolute;
+			left: 0;
+		}
+
+		.menu-toggler + label:before {
+			top: 10px;
+		}
+
+		.menu-toggler + label:after {
+			top: -10px;
+		}
+
+		/* 因为每个图标在菜单展开时都要实现旋转的效果，但是旋转后的图标会很不能摆正，所以要调回来 */
+		.menu-item:nth-child(1) a {
+			transform: rotate(0deg);
+		}
+
+		.menu-item:nth-child(2) a {
+			transform: rotate(-60deg);
+		}
+
+		.menu-item:nth-child(3) a {
+			transform: rotate(-120deg);
+		}
+
+		.menu-item:nth-child(4) a {
+			transform: rotate(-180deg);
+		}
+
+		.menu-item:nth-child(5) a {
+			transform: rotate(-240deg);
+		}
+
+		.menu-item:nth-child(6) a {
+			transform: rotate(-300deg);
+		}
+
+		.menu-item a {
+			/* 由于原来的每个图标都很小，所以需要拉宽和拉长 */
+			display: block;
+			width: inherit;
+			height: inherit;
+			line-height: 40px;
+			color: rgba(255, 255, 255, 0.7);
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 50%;
+			text-align: center;
+			text-decoration: none;
+			font-size: 10px;
+			pointer-events: none;
+			transition: 0.2s;
+		}
+		.menu-item {
+			position: absolute;
+			display: block;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			margin: auto;
+			width: 40px;
+			height: 40px;
+			/* 因为所有菜单选项都会回到中心，那么就需要隐藏掉他们的内容 */
+			opacity: 0;
+			transition: 0.5s;
+		}
+		/* hover到图标显示放大的效果 */
+		.menu-item a:hover {
+			box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+			color: white;
+			background: rgba(255, 255, 255, 0.3);
+			font-size: 10px;
+		}
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script src="js/tween.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/CSS3DRenderer.js"></script>
+		<script src="js/html2canvas.js"></script>
+		<script src="js/canvas2image.js"></script>
+
+		<!-- <div id="info"><a href="http://threejs.org" target="_blank" rel="noopener">three.js css3d</a> - periodic table. <a href="https://plus.google.com/113862800338869870683/posts/QcFk5HrWran" target="_blank" rel="noopener">info</a>.</div> -->
+		<div id="container"></div>
+		<div id="menu" >
+			<button id="table" style="display: none;">表格</button>
+			<button id="sphere" >球形</button>
+			<button id="helix" >螺旋</button>
+			<button id="grid" >网格</button>
+			<button id="musicyy" >音乐</button>
+			<button id="save" >保存</button>
+			<button id="shan" >设置</button>
+		</div>
+		<div id='popup'></div>
+		<!--背景音乐标签-->
+		<audio id="music" src="./music/Autumn.m4a" loop></audio>
+		<!--设置标签-->
+		<div id="DivCanvasFontShan">
+			<canvas id="myCanvasFontShan" width="60" height="60">
+				您的浏览器不支持 HTML5 canvas 标签。
+			</canvas>
+		</div>
+		<!-- 菜单部分 -->
+		<div id="divMenu" style="display: none;">
+			<nav class="menu">
+				<input
+					checked="checked"
+					class="menu-toggler"
+					id="menu-toggler"
+					type="checkbox"
+				/>
+				<label for="menu-toggler"></label>
+				<ul>
+					<li class="menu-item">
+						<a href="javascript:void(0)">球形</a>
+					</li>
+					<li class="menu-item">
+						<a href="javascript:void(0)">螺旋</a>
+					</li>
+					<li class="menu-item">
+						<a href="javascript:void(0)">音乐</a>
+					</li>
+					<li class="menu-item">
+						<a href="javascript:void(0)">设置</a>
+					</li>
+					<li class="menu-item">
+						<a href="javascript:void(0)">保存</a>
+					</li>
+					<li class="menu-item">
+						<a href="javascript:void(0)">网格</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<script>
+
+			var table = [
+				"H", "Hydrogen", "1.00794", 1, 1,
+				"He", "Helium", "4.002602", 18, 1,
+				"Li", "Lithium", "6.941", 1, 2,
+				"Be", "Beryllium", "9.012182", 2, 2,
+				"B", "Boron", "10.811", 13, 2,
+				"C", "Carbon", "12.0107", 14, 2,
+				"N", "Nitrogen", "14.0067", 15, 2,
+				"O", "Oxygen", "15.9994", 16, 2,
+				"F", "Fluorine", "18.9984032", 17, 2,
+				"Ne", "Neon", "20.1797", 18, 2,
+				"Na", "Sodium", "22.98976...", 1, 3,
+				"Mg", "Magnesium", "24.305", 2, 3,
+				"Al", "Aluminium", "26.9815386", 13, 3,
+				"Si", "Silicon", "28.0855", 14, 3,
+				"P", "Phosphorus", "30.973762", 15, 3,
+				"S", "Sulfur", "32.065", 16, 3,
+				"Cl", "Chlorine", "35.453", 17, 3,
+				"Ar", "Argon", "39.948", 18, 3,
+				"K", "Potassium", "39.948", 1, 4,
+				"Ca", "Calcium", "40.078", 2, 4,
+				"Sc", "Scandium", "44.955912", 3, 4,
+				"Ti", "Titanium", "47.867", 4, 4,
+				"V", "Vanadium", "50.9415", 5, 4,
+				"Cr", "Chromium", "51.9961", 6, 4,
+				"Mn", "Manganese", "54.938045", 7, 4,
+				"Fe", "Iron", "55.845", 8, 4,
+				"Co", "Cobalt", "58.933195", 9, 4,
+				"Ni", "Nickel", "58.6934", 10, 4,
+				"Cu", "Copper", "63.546", 11, 4,
+				"Zn", "Zinc", "65.38", 12, 4,
+				"Ga", "Gallium", "69.723", 13, 4,
+				"Ge", "Germanium", "72.63", 14, 4,
+				"As", "Arsenic", "74.9216", 15, 4,
+				"Se", "Selenium", "78.96", 16, 4,
+				"Br", "Bromine", "79.904", 17, 4,
+				"Kr", "Krypton", "83.798", 18, 4,
+				"Rb", "Rubidium", "85.4678", 1, 5,
+				"Sr", "Strontium", "87.62", 2, 5,
+				"Y", "Yttrium", "88.90585", 3, 5,
+				"Zr", "Zirconium", "91.224", 4, 5,
+				"Nb", "Niobium", "92.90628", 5, 5,
+				"Mo", "Molybdenum", "95.96", 6, 5,
+				"Tc", "Technetium", "(98)", 7, 5,
+				"Ru", "Ruthenium", "101.07", 8, 5,
+				"Rh", "Rhodium", "102.9055", 9, 5,				
+				"Pd", "Palladium", "106.42", 10, 5,
+				"Ag", "Silver", "107.8682", 11, 5,
+				"Cd", "Cadmium", "112.411", 12, 5,
+				"In", "Indium", "114.818", 13, 5,
+				"Sn", "Tin", "118.71", 14, 5,
+				"Sb", "Antimony", "121.76", 15, 5,
+				"Te", "Tellurium", "127.6", 16, 5,
+				"I", "Iodine", "126.90447", 17, 5,
+				"Xe", "Xenon", "131.293", 18, 5,
+				"Cs", "Caesium", "132.9054", 1, 6,
+				"Ba", "Barium", "132.9054", 2, 6,
+				"La", "Lanthanum", "138.90547", 4, 9,
+				"Ce", "Cerium", "140.116", 5, 9,
+				"Pr", "Praseodymium", "140.90765", 6, 9,
+				"Nd", "Neodymium", "144.242", 7, 9,
+				"Pm", "Promethium", "(145)", 8, 9,
+				"Sm", "Samarium", "150.36", 9, 9,
+				"Eu", "Europium", "151.964", 10, 9,
+				"Gd", "Gadolinium", "157.25", 11, 9,
+				"Tb", "Terbium", "158.92535", 12, 9,
+				"Dy", "Dysprosium", "162.5", 13, 9,
+				"Ho", "Holmium", "164.93032", 14, 9,
+				"Er", "Erbium", "167.259", 15, 9,
+				"Tm", "Thulium", "168.93421", 16, 9,
+				"Yb", "Ytterbium", "173.054", 17, 9,
+				"Lu", "Lutetium", "174.9668", 18, 9,
+				"Hf", "Hafnium", "178.49", 4, 6,
+				"Ta", "Tantalum", "180.94788", 5, 6,
+				"W", "Tungsten", "183.84", 6, 6,
+				"Re", "Rhenium", "186.207", 7, 6,
+				"Os", "Osmium", "190.23", 8, 6,
+				"Ir", "Iridium", "192.217", 9, 6,
+				"Pt", "Platinum", "195.084", 10, 6,
+				"Au", "Gold", "196.966569", 11, 6,
+				"Hg", "Mercury", "200.59", 12, 6,
+				"Tl", "Thallium", "204.3833", 13, 6,
+				"Pb", "Lead", "207.2", 14, 6,
+				"Bi", "Bismuth", "208.9804", 15, 6,
+				"Po", "Polonium", "(209)", 16, 6,
+				"At", "Astatine", "(210)", 17, 6,
+				"Rn", "Radon", "(222)", 18, 6,
+				"Fr", "Francium", "(223)", 1, 7,
+				"Ra", "Radium", "(226)", 2, 7,
+				"Ac", "Actinium", "(227)", 4, 10,
+				"Th", "Thorium", "232.03806", 5, 10,
+				"Pa", "Protactinium", "231.0588", 6, 10,
+				"U", "Uranium", "238.02891", 7, 10,
+				"Np", "Neptunium", "(237)", 8, 10,
+				"Pu", "Plutonium", "(244)", 9, 10,
+				"Am", "Americium", "(243)", 10, 10,
+				"Cm", "Curium", "(247)", 11, 10,
+				"Bk", "Berkelium", "(247)", 12, 10,
+				"Cf", "Californium", "(251)", 13, 10,
+				"Es", "Einstenium", "(252)", 14, 10,
+				"Fm", "Fermium", "(257)", 15, 10,
+				"Md", "Mendelevium", "(258)", 16, 10,
+				"No", "Nobelium", "(259)", 17, 10,
+				"Lr", "Lawrencium", "(262)", 18, 10,
+				"Rf", "Rutherfordium", "(267)", 4, 7,
+				"Db", "Dubnium", "(268)", 5, 7,
+				"Sg", "Seaborgium", "(271)", 6, 7,
+				"Bh", "Bohrium", "(272)", 7, 7,
+				"Hs", "Hassium", "(270)", 8, 7,
+				"Mt", "Meitnerium", "(276)", 9, 7,
+				"Ds", "Darmstadium", "(281)", 10, 7,
+				"Rg", "Roentgenium", "(280)", 11, 7,
+				"Cn", "Copernicium", "(285)", 12, 7,
+				"Nh", "Nihonium", "(286)", 13, 7,
+				"Fl", "Flerovium", "(289)", 14, 7,
+				"Mc", "Moscovium", "(290)", 15, 7,
+				"Lv", "Livermorium", "(293)", 16, 7,
+				"Ts", "Tennessine", "(294)", 17, 7,
+				"Og", "Oganesson", "(294)", 18, 7
+			];
+
+			var shan = [
+				[		
+				]
+			];
+
+			var camera, scene, renderer;
+			var controls;
+			var t0 = new Date();
+
+			var objects = [];
+			var targets = { shan: [],table: [], sphere: [], helix: [], grid: [] };
+			var inputWords = "山";
+
+			init();
+			animate();
+			generateWordPixels(inputWords);
+
+			function init() {
+				// 场景
+				scene = new THREE.Scene();
+				
+				// 相机
+				camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 3000;	
+				
+				// 渲染器
+				renderer = new THREE.CSS3DRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById( 'container' ).appendChild( renderer.domElement );
+				
+				//轨道控制器
+				controls = new THREE.OrbitControls(camera, renderer.domElement);				
+				controls.autoRotate = true; //为true时，相机自动围绕目标旋转,但必须在animation循环中调用update()
+				controls.autoRotateSpeed = 0.5; //相机自动围绕目标旋转速度，默认2.0，代表每轮60fps用时30s,值越小转动越慢
+				controls.rotateSpeed = 0.6; //鼠标左键操作的旋转速度
+				controls.minPolarAngle = 0; // 上下翻转范围 0-max度	
+				controls.maxPolarAngle = Math.PI / 1; // 上下翻转范围 0-max度				
+				controls.minDistance = 100; // 设置移动的最短距离（默认为零）
+				controls.maxDistance = 6000; // 设置移动的最长距离（默认为无穷）
+
+				let  validateImage = (pathImg)  =>{    ////判断图片地址是否有效
+					let ImgObj = new Image();
+					ImgObj.src = pathImg;
+					if(ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+
+				// table row=10;column=18
+				for (i=0 , L=1 ; i < table.length; i += 5, L++ ) {
+					var element = document.createElement( 'div' );
+					element.className = 'element';						
+					element.style.backgroundImage = 'url(./photo/' + L + '.jpg)'; // 背景图片 图片名称是 1...118.jpg
+					element.style.backgroundSize = 'cover'; //保持图像的宽高比例，将图片缩放到正好完全覆盖定义的背景区域，其中有一边和背景相同
+					element.name = L ; // 给元素的name属性赋值，以便获取鼠标点击的当前值
+					
+					// 序号
+					var number = document.createElement( 'div' );
+					number.className = 'number';
+					number.textContent = (i/5) + 1;
+					element.appendChild( number );	
+
+					var object = new THREE.CSS3DObject( element );
+					object.position.x = Math.random() * 4000 - 2000;
+					object.position.y = Math.random() * 4000 - 2000;
+					object.position.z = Math.random() * 4000 - 2000;			
+					
+					scene.add( object );
+					objects.push( object );
+
+					//
+					var object = new THREE.Object3D();
+					object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
+					object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
+					targets.table.push( object );
+				}
+
+				// 球形
+				var vector = new THREE.Vector3();
+				var spherical = new THREE.Spherical();
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+					var phi = Math.acos( -1 + ( 2 * i ) / l );
+					var theta = Math.sqrt( l * Math.PI ) * phi;
+					var object = new THREE.Object3D();
+					spherical.set( 800, phi, theta );
+					object.position.setFromSpherical( spherical );
+					vector.copy( object.position ).multiplyScalar( 2 );
+					object.lookAt( vector );
+					targets.sphere.push( object );
+				}
+
+				// 螺旋
+				var vector = new THREE.Vector3();
+				var cylindrical = new THREE.Cylindrical();
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+					var theta = i * 0.175 + Math.PI;
+					var y = - ( i * 8 ) + 450;
+					var object = new THREE.Object3D();
+					cylindrical.set( 900, theta, y );
+					object.position.setFromCylindrical( cylindrical );
+					vector.x = object.position.x * 2;
+					vector.y = object.position.y;
+					vector.z = object.position.z * 2;
+					object.lookAt( vector );
+					targets.helix.push( object );
+				}
+
+				// 网格
+				for ( var i = 0; i < objects.length; i ++ ) {
+					var object = new THREE.Object3D();
+					object.position.x = ( ( i % 5 ) * 400 ) - 800;
+					object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+					object.position.z = (Math.floor( i / 25 )) * 1000 - 2000;
+					targets.grid.push(object);
+				}				
+				
+				
+				// 监听按钮事件
+
+				var button = document.getElementById( 'table' );
+				button.addEventListener('click', function (event) {
+					transform(targets.table, 2000);
+				}, false);
+
+				var button = document.getElementById( 'sphere' );
+				button.addEventListener('click', function (event) {
+					transform(targets.sphere, 2000);
+				}, false);
+
+				var button = document.getElementById('helix');
+				button.addEventListener('click', function (event) {
+					transform(targets.helix, 2000);
+				}, false);
+
+				var button = document.getElementById( 'grid' );
+				button.addEventListener('click', function (event) {
+					transform(targets.grid, 2000);
+				}, false);
+
+				transform(targets.table, 2000);
+			}
+			var button = document.getElementById( 'save' );
+				button.addEventListener('click', function (event) {
+					// html2canvas(document.body).then(function(canvas) {
+					// 	document.body.appendChild(canvas);
+					// });
+					html2canvas(document.querySelector("#container")).then(canvas => {
+						debugger
+						// canvas宽度
+						var canvasWidth = canvas.width;
+						// canvas高度
+						var canvasHeight = canvas.height;
+						// 调用Canvas2Image插件
+						var img = Canvas2Image.convertToImage(canvas, canvasWidth, canvasHeight);
+						debugger
+					});
+					var image = new Image();
+					// 创建一个超链接元素，用来下载保存数据的文件
+					var link = document.createElement('a');
+					// 通过超链接herf属性，设置要保存到文件中的数据
+					var canvas = renderer.domElement;//获取canvas对象
+					link.href = canvas.toDataURL("image/png");
+					link.download = dateFtt("yyyy-MM-dd_hhmmss", new Date())+'.png'; //下载文件名
+					link.click(); //js代码触发超链接元素a的鼠标点击事件，开始下载文件到本地
+					link.remove();
+				}, false);
+
+			var button = document.getElementById( 'shan' );
+				button.addEventListener('click', function (event) {
+					let person = prompt("请输入要生成的字", "山");
+					if (person == null) {
+						person = "山";
+					}
+					inputWords = person;
+					generateWordPixels(inputWords);
+					
+				}, false);
+
+			var button = document.getElementById( 'musicyy' );
+				button.addEventListener('click', function (event) {
+					let music = document.getElementById('music');
+					var audioPlayer = document.querySelector('audio#music');
+					if(audioPlayer.paused){
+						audioPlayer.src = "./music/Autumn.m4a";
+						audioPlayer.play();
+						console.log("music.pause");
+					}else{
+						audioPlayer.src = null;
+						audioPlayer.pause();
+						console.log("music.pause");
+					}
+				}, false);
+
+			function redraw(){
+				// 场景
+				scene = new THREE.Scene();
+				
+				// 相机
+				camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 3000;	
+				
+				// 渲染器
+				renderer = new THREE.CSS3DRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById( 'container' ).appendChild( renderer.domElement );
+				
+				//轨道控制器
+				controls = new THREE.OrbitControls(camera, renderer.domElement);				
+				controls.autoRotate = true; //为true时，相机自动围绕目标旋转,但必须在animation循环中调用update()
+				controls.autoRotateSpeed = 0.5; //相机自动围绕目标旋转速度，默认2.0，代表每轮60fps用时30s,值越小转动越慢
+				controls.rotateSpeed = 0.6; //鼠标左键操作的旋转速度
+				controls.minPolarAngle = 0; // 上下翻转范围 0-max度	
+				controls.maxPolarAngle = Math.PI / 1; // 上下翻转范围 0-max度				
+				controls.minDistance = 100; // 设置移动的最短距离（默认为零）
+				controls.maxDistance = 6000; // 设置移动的最长距离（默认为无穷）
+
+				let  validateImage = (pathImg)  =>{    ////判断图片地址是否有效
+					let ImgObj = new Image();
+					ImgObj.src = pathImg;
+					if(ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+				//shan
+				for(let i = 0, L=126; i < shan[0].length; i++){
+					for(let j = 0; j < shan[0][i].length; j++){
+						if(shan[0][i][j] == 1){
+							L++;
+							var element = document.createElement( 'div' );
+							element.className = 'element';
+							element.style.backgroundImage = 'url(./photo/' + L + '.jpg), url(./photo/138.jpg)';
+							element.style.backgroundSize = 'cover';
+							element.name = L ;
+							
+							var number = document.createElement( 'div' );
+							number.className = 'number';
+							number.textContent = ((i+1)/5) + 1;
+							element.appendChild( number );	
+
+							var object = new THREE.CSS3DObject( element );
+							object.position.x = Math.random() * 4000 - 2000;
+							object.position.y = Math.random() * 4000 - 2000;
+							object.position.z = Math.random() * 4000 - 2000;					
+							
+							scene.add( object );
+							objects.push( object );
+
+							var object = new THREE.Object3D();
+							var positionx = i+1;
+							var positiony = j+1;
+
+							object.position.x = ( positiony * 140 ) - 1330;
+							object.position.y = - ( positionx * 180 ) + 990;
+							targets.shan.push( object );
+						}
+					}
+				}
+
+				// 球形
+				var vector = new THREE.Vector3();
+				var spherical = new THREE.Spherical();
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+					var phi = Math.acos( -1 + ( 2 * i ) / l );
+					var theta = Math.sqrt( l * Math.PI ) * phi;
+					var object = new THREE.Object3D();
+					spherical.set( 800, phi, theta );
+					object.position.setFromSpherical( spherical );
+					vector.copy( object.position ).multiplyScalar( 2 );
+					object.lookAt( vector );
+					targets.sphere.push( object );
+				}
+
+				// 螺旋
+				var vector = new THREE.Vector3();
+				var cylindrical = new THREE.Cylindrical();
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+					var theta = i * 0.175 + Math.PI;
+					var y = - ( i * 8 ) + 450;
+					var object = new THREE.Object3D();
+					cylindrical.set( 900, theta, y );
+					object.position.setFromCylindrical( cylindrical );
+					vector.x = object.position.x * 2;
+					vector.y = object.position.y;
+					vector.z = object.position.z * 2;
+					object.lookAt( vector );
+					targets.helix.push( object );
+				}
+
+				// 网格
+				for ( var i = 0; i < objects.length; i ++ ) {
+					var object = new THREE.Object3D();
+					object.position.x = ( ( i % 5 ) * 400 ) - 800;
+					object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+					object.position.z = (Math.floor( i / 25 )) * 1000 - 2000;
+					targets.grid.push(object);
+				}				
+				
+				
+				// 监听按钮事件
+				var button = document.getElementById( 'sphere' );
+				button.addEventListener('click', function (event) {
+					transform(targets.sphere, 2000);
+				}, false);
+
+				var button = document.getElementById('helix');
+				button.addEventListener('click', function (event) {
+					transform(targets.helix, 2000);
+				}, false);
+
+				var button = document.getElementById( 'grid' );
+				button.addEventListener('click', function (event) {
+					transform(targets.grid, 2000);
+				}, false);
+				transform(targets.shan, 2000);
+			}
+
+			function transform( targets, duration ) {
+				TWEEN.removeAll();
+				for ( var i = 0; i < objects.length; i ++ ) {
+					var object = objects[ i ];
+					var target = targets[ i ];
+					new TWEEN.Tween(object.position)
+						.to({ x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration)
+						.easing(TWEEN.Easing.Exponential.InOut )
+						.start();
+					
+					new TWEEN.Tween(object.rotation)
+						.to({ x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration)
+						.easing(TWEEN.Easing.Exponential.InOut)
+						.start();
+				}
+				
+				new TWEEN.Tween(this)
+					.to({}, duration * 2)
+					.onUpdate(render)
+					.start();
+			}
+			
+			function render() {				
+				renderer.render(scene, camera);
+			}
+
+			function animate() {				
+				TWEEN.update();					
+				controls.update();				
+				renderer.render(scene, camera);	
+				requestAnimationFrame(animate);
+			}
+			
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				render();
+			}
+			
+			// 鼠标双击事件
+			function onMouseDbClick() {	
+				console.log("onMouseDbClick");				
+				let element = document.documentElement;
+				
+				//全屏，注意api中单词的大小写
+				if (element.requestFullscreen) {
+				  element.requestFullscreen()
+				} else if (element.msRequestFullscreen) { // 兼容ie11，11以下不支持
+				  element.msRequestFullscreen()
+				} else if (element.mozRequestFullScreen) { // 兼容火狐
+				  element.mozRequestFullScreen()
+				} else if (element.webkitRequestFullscreen) { // 兼容webkit内核浏览器，如chrome和safari
+				  element.webkitRequestFullscreen()
+				} else {
+					// 如果是ie10的话提示用户用f11进行全屏
+					if(document.documentMode === 10){
+						alert('IE10无效，请使用F11进行全屏！')
+					}
+				}
+				
+				//退出全屏
+				if (document.exitFullscreen) {
+				  document.exitFullscreen();
+				}
+				else if (document.mozCancelFullScreen) {
+				  document.mozCancelFullScreen();
+				}
+				else if (document.webkitCancelFullScreen) {
+				  document.webkitCancelFullScreen();
+				}
+				else if (document.msExitFullscreen) {
+				  document.msExitFullscreen();
+				}
+			}
+			
+			// 鼠标单击事件
+			function clickMouse(e) {
+				console.log("clickMouse");			
+				if(!e){
+					let e = window.event;
+				}								
+				let tname = e.target.name; //获取点击图片的名称				
+				if (typeof(tname) == "undefined" || tname =='') {					
+					deleteDiv();
+				}else{					
+					divPop(tname);
+				}
+			
+				// 弹窗内容与样式	
+				function divPop(tname) {
+					let w = window.innerWidth;
+					let h = window.innerHeight;
+					let div = document.getElementById("popup"); 					
+					div.style.display = 'block'; //显示元素			
+					div.style.backgroundImage = 'url(./photo/' + tname + '.jpg), url(./photo/138.jpg)';
+					div.style.backgroundSize = 'cover';
+					div.style.height = h*0.8 + 'px';
+					div.style.width = h*0.8*0.75 +'px';					
+					div.style.position = 'absolute';
+					div.style.left = '0px';
+					div.style.right = '0px';
+					div.style.top = '0px';
+					div.style.bottom = '0px';
+					div.style.margin = 'auto';	
+					div.style.boxShadow = '0 0 20px 10px #dfff0c'; // 边框阴影
+					div.style.borderRadius = '5px'; // 圆角
+				}
+			
+				// 清除弹窗
+				function deleteDiv() {
+					let div = document.getElementById("popup");
+					div.style.display = 'none'; //隐藏元素					
+				}
+				
+				// music();
+			}
+			music();
+			// 背景音乐
+			function music() {
+				let music = document.getElementById('music');
+				// let audio = new Audio('./music/Autumn.m4a');
+				music.play(); // 播放音乐
+			}
+
+			function generateWordPixels(word){
+				var myCanvas=document.getElementById("myCanvasFontShan");
+				var ctx=myCanvas.getContext("2d");
+				myCanvas.width = 60*word.length;
+				var ww = myCanvas.width;
+				var h = myCanvas.height;
+				ctx.clearRect(0, 0, ww, h);
+				ctx.textBaseline = 'top';
+				ctx.fillStyle = "#cc0000";
+				ctx.font="bolder 40px Unifontfft";
+				ctx.fillText(word, 10, 10);
+				var w = ctx.measureText(word).width;
+
+				var strXArr = [];
+				var xi = 2;
+				switch(word.length) {
+					case 1:
+						xi = 2*word.length;
+						break;
+					case 2:
+						xi = 1*word.length;
+						break;
+					case 3:
+						xi = 1*word.length;
+						break;
+					default:
+						xi = 2;
+				}
+				for (y = 1; y < 40; y+=3.6) {
+					var strY = [];
+					for (x = 1; x < w; x+=xi) {
+						imageData = ctx.getImageData(10 + x, 10 + y, 1, 1);
+						if (imageData.data[0] == 0) {
+							strY.push(0);
+						}else {
+							strY.push(1);
+						}
+					}
+					if(sum(strY)>0){
+						strXArr.push(strY);
+					}
+				}
+				shan[0] = strXArr;
+				// let b = strXArr.map((item) => {
+				// 	return item.join(',')
+				// })
+				// Div1.innerHTML= Div1.innerHTML +"[" + b.join('],<br>[') + "]";
+
+				while(scene.children.length > 0){ 
+					scene.remove(scene.children[0]); 
+				}
+				document.getElementById( 'container' ).innerHTML = '';
+				flows = [];
+				scene = null;
+				camera = null;
+				controls = null;
+				renderer.domElement = null;
+				renderer = null;
+				sceneDomElement = null;
+
+				camera = undefined, scene=undefined, renderer=undefined,controls=undefined;
+				objects = [];
+				targets = { shan: [],table: [], sphere: [], helix: [], grid: [] };
+				redraw();
+				animate();
+			}
+			function sum(arr) {
+				var s = 0;
+				for (var i=arr.length-1; i>=0; i--) {
+					s += arr[i];
+				}
+				return s;
+			}
+			//日期格式转化
+			function dateFtt(fmt, date) { //author: meizz   
+				var o = {
+					"M+": date.getMonth() + 1, //月份   
+					"d+": date.getDate(), //日   
+					"h+": date.getHours(), //小时   
+					"m+": date.getMinutes(), //分   
+					"s+": date.getSeconds(), //秒   
+					"q+": Math.floor((date.getMonth() + 3) / 3), //季度   
+					"S": date.getMilliseconds() //毫秒   
+				};
+				if(/(y+)/.test(fmt))
+					fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+				for(var k in o)
+					if(new RegExp("(" + k + ")").test(fmt))
+						fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+				return fmt;
+			}
+			
+			// 监听窗口缩放事件
+			window.addEventListener('resize', onWindowResize, false);
+			// 监听双击事件
+			document.addEventListener('dblclick', onMouseDbClick, false); 
+			// web端 监听鼠标单击事件
+			window.addEventListener('click', clickMouse, false);
+			// 移动端 监听鼠标单击事件
+			window.addEventListener('touchstart', clickMouse, false);
+		</script>
+	</body>
+</html>
