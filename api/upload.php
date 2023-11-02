@@ -7,19 +7,17 @@
     		$Suffix = explode('.',$files['name'][$i]);
     		$front = $Suffix[count($Suffix)-2];
     		$houzui = $Suffix[count($Suffix)-1];
-    		$filename = $_SERVER['DOCUMENT_ROOT'].'/photo/'.$front.'_'.time().'_'.$j++.'.'.$houzui;
+    		$filename = 'photo/'.$front.'_'.time().'_'.$j++.'.'.$houzui;
     		$succeedStr = '';
     		if(move_uploaded_file($files['tmp_name'][$i], $filename)){
     		    $succeedStr =  ":文件上传成功:".$filename;
     		}else{
     		    $succeedStr =  ":文件上传失败:".$filename;
-    		    
     		}
     		$succeedTime = date('Y-m-d',$_SERVER['REQUEST_TIME']);
     		file_put_contents(dirname( __FILE__ ).'/upload_log.log',$succeedTime.$succeedStr."\n", FILE_APPEND);
     	}
-        echo $filename;
-    	// echo count($files['tmp_name']);
+    	echo count($files['tmp_name']);
         // 	echo json_encode($files);
     }elseif($_REQUEST['action']=='getTableData'){
         $tableData = array();
@@ -39,8 +37,36 @@
         //5、关闭目录
         closedir($handler);
         echo json_encode($tableData);
+    }elseif($_REQUEST['action']=='base64'){
+        //接收base64数据
+        $image= $_POST['base'];
+        //设置图片名称
+        $imageName = date("Ymd_His",time())."_".rand(1111,9999).'.png';
+        //判断是否有逗号 如果有就截取后半部分
+        if (strstr($image,",")){
+            $image = explode(',',$image);
+            $image = $image[1];
+        }
+        //设置图片保存路径
+        $path = "photo";
+
+        //判断目录是否存在 不存在就创建
+        if (!is_dir($path)){
+            mkdir($path,0777,true);
+        }
+
+        //图片路径
+        $imageSrc= $path."/". $imageName;
+
+        //生成文件夹和图片
+        $r = file_put_contents($imageSrc, base64_decode($image));
+        if (!$r) {
+            return json(['code'=>0,'message'=>'图片生成失败']);
+        }else {
+            return json(['code'=>1,'message'=>'图片生成成功']);
+        }
     }else{
-        
+        return json(['code'=>0,'message'=>'没有找到接口']);
     }
 
 ?>
