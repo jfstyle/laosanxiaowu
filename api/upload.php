@@ -60,7 +60,7 @@
         }
     }else{
         
-        return json(['code'=>0,'message'=>'没有找到接口'.__FILE__]);
+        return json(['code'=>0,'message'=>'没有找到接口'.__FILE__,'path'=>dirname(dirname(__FILE__))]);
     }
 
 ?>
