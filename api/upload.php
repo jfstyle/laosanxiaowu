@@ -48,7 +48,7 @@
             $image = $image[1];
         }
         //设置图片保存路径
-        $path = "photo";
+        $path = "/photo";
 
         //判断目录是否存在 不存在就创建
         if (!is_dir($path)){
