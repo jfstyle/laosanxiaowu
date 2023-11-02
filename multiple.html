@@ -94,7 +94,7 @@
                 						var formData = new FormData();
                 						formData.append('base', this.result);
                 						var xhr = new XMLHttpRequest();
-                						xhr.open('POST', 'upload.php?action=base64', true);
+                						xhr.open('POST', '/api/upload.php?action=base64', true);
                 						xhr.onload = function () {
                 							if (xhr.readyState == 4 && xhr.status == 200) {
                 								console.log('上传成功');
