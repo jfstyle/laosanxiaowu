@@ -710,6 +710,12 @@
 				}, false);
 
 			function redraw(){
+				var request = new XMLHttpRequest();
+				request.open('GET', 'api/upload.php?action=getTableData', false);
+				request.send(null);
+				if (request.status === 200) {
+					console.log("getTableData:"+request.responseText);
+				}
 				// 场景
 				scene = new THREE.Scene();
 				
