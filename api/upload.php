@@ -54,9 +54,9 @@
         //生成文件夹和图片
         $r = file_put_contents($imageSrc, base64_decode($image));
         if (!$r) {
-            return json(['code'=>0,'message'=>'图片生成失败']);
+            return json_encode(['code'=>0,'message'=>'图片生成失败']);
         }else {
-            return json(['code'=>1,'message'=>'图片生成成功']);
+            return json_encode(['code'=>1,'message'=>'图片生成成功']);
         }
     }else{
         
