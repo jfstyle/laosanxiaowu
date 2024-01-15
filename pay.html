@@ -1,0 +1,316 @@
+<html>
+<head>
+    <title>支付信息生成</title>
+    <style>
+        table { border-collapse: collapse;}
+        table,table tr th, table tr td { border:1px solid silver; text-align:left;padding:4px 16px;font-family: 'STKaiti';font-size:14px;font-weight:600;border-color: rgba(151, 151, 151, 0.3);}
+        table,table tr th { text-align:center; }
+        table tbody td{
+            color:gray;
+        }
+        /* table tbody tr td:first-child{
+            color:rgb(216, 32, 111);
+        } */
+        tr td:nth-child(2){
+            color: green;
+        }
+        tr td:last-child
+        { 
+            font-family: 'STKaiti';
+        }
+        .td0{
+            color: red;
+        }
+        .td1{
+            color: green;
+        }
+        tbody{
+            filter: blur(0.2px);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<table align="center" id="outputTable">
+    <caption style="padding: 10 0;">
+        <fieldset>
+            <legend style="text-align: center;">
+                <span style="color: fuchsia;">勾选金额</span>/
+                <span style="color:brown;">增加金额</span>/
+                <span>成功多少</span>/
+                <span style="color:cornflowerblue;">生成数据</span>
+            </legend>
+            <div id="divAmount" style="color: fuchsia;"></div>
+            <!-- <label><input name="amount" type="checkbox" value="10" />10&nbsp;</label> -->
+            <hr style='background-color:blue; height:1px; border:none;'/>
+            &nbsp;&nbsp;<input type="button" id="btnAddAmount" style="color:brown;" value="增加金额">
+            &nbsp;&nbsp;<label><input id="howMuchSuccess" type="checkbox" />成功过50%</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnGenData" style="color:cornflowerblue;" value="生成数据">
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" id="btnGenAllData" style="color:cornflowerblue;" value="所有随机">
+            &nbsp;&nbsp;<input type="button" id="btnSortTable" style="float:right" value="排序">
+            <br />
+        </fieldset>
+    </caption>
+    <!-- <thead>
+        <tr>
+            <th>序号</th>
+            <th>支付金额</th>
+            <th>下单时间</th>
+            <th>支付时间</th>
+            <th>支付状态</th>
+        </tr>
+    </thead> -->
+    <tbody align="center" id="outputTbody">
+        <tr>
+            <th>序号</th>
+            <th>支付金额</th>
+            <th>下单时间</th>
+            <th>支付时间</th>
+            <th>支付状态</th>
+        </tr>
+        <!-- <tr>
+            <td>1</td>
+            <td>10.0000</td>
+            <td>2024-01-14 21:12:32</td>
+            <td>2024-01-14 21:13:20</td>
+            <td class="td1">成功,已返回</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>100.0000</td>
+            <td>2024-01-14 21:12:32</td>
+            <td>---</td>
+            <td class="td0">未处理</td>
+        </tr> -->
+    </tbody>
+</table>
+<script type="text/javascript">
+    var amountArr = [10,50,100,200,300,500,1000,1500,2000,2500,3000];
+    var amountNumber = 25;
+    var howMuchSuccessCount = 0;
+    document.addEventListener("DOMContentLoaded", (event) => {
+        console.log("DOM 完全加载和解析");
+
+        for (var i=0;i<amountArr.length;i++)
+        { 
+            var label = document.createElement('label');
+            var input = document.createElement('input');
+            var span = document.createElement('span');
+            input.name = "amount";
+            input.type = "checkbox";
+            input.value = amountArr[i];
+            span.innerHTML = amountArr[i]+'&nbsp;';
+            label.appendChild(input);
+            label.appendChild(span);
+            document.getElementById("divAmount").appendChild(label);
+        }
+        
+        document.getElementById("btnAddAmount").onclick = function(){
+            var addAmount=prompt("输入需要的金额","10");
+            var addNumAmount = Number(addAmount);
+            if(!isNaN(addNumAmount))
+            {
+                if(amountArr.indexOf(addNumAmount)==-1){
+                    amountArr.push(addNumAmount);
+                    var label = document.createElement('label');
+                    var input = document.createElement('input');
+                    var span = document.createElement('span');
+                    input.name = "amount";
+                    input.type = "checkbox";
+                    input.checked = true;
+                    input.value = addNumAmount;
+                    span.innerHTML = addNumAmount+'&nbsp;';
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    document.getElementById("divAmount").appendChild(label);
+                }else{
+                    alert("输入的金额:"+ addNumAmount+",存在列表中,无需增加");
+                }
+            }else{
+                alert("输入错误，必须数字，请重新增加")
+            }
+        }
+
+        document.getElementById("btnGenData").onclick = function(){
+            var amountCKS=document.getElementsByName("amount");
+            var amountCKSlen=amountCKS.length;
+            var amountCKSArr=[];
+            for (i=0;i<amountCKSlen;i++)
+            {
+                if(amountCKS[i].checked == true)
+                {
+                    amountCKSArr.push(amountCKS[i].value);
+                }
+            }
+            if(amountCKSArr.length == 0)
+            {
+                alert("请先选择一个或多个金额进行生成数据");
+            }else{
+                getAmountList(amountCKSArr);
+            }
+        }
+        document.getElementById("btnGenAllData").onclick = function(){
+            getAmountList(amountArr);
+        }
+        getAmountList(amountArr);
+    });
+    document.getElementById("btnSortTable").onclick = function(){
+        sortTable();
+    };
+
+    getFloat = function(number, n) {
+        n = n ? parseInt(n) : 0;
+        if(n <= 0) {
+            return Math.round(number);
+        }
+        number = Math.round(number * Math.pow(10, n)) / Math.pow(10, n);
+        number = Number(number).toFixed(n);
+        return number;
+    };
+
+    getAmountList = function(ckAmountArr) {
+        const outputTbody = document.getElementById("outputTbody");
+        const firstRow = outputTbody.rows[0];
+        while(outputTbody.rows.length>1){
+            outputTbody.deleteRow(1);
+        }
+        outputTbody.appendChild(firstRow);
+        // document.getElementById("outputTbody").innerHTML = "";
+        var howMuchSuccess = document.getElementById("howMuchSuccess").checked;
+        howMuchSuccessCount = randomNum(1,Math.round(amountNumber/2));
+        if(howMuchSuccess){
+            howMuchSuccessCount = randomNum(Math.round(amountNumber/2),amountNumber);
+        }
+        console.log("开始生成数据");
+        var sufaList = [];
+        for(var i=0;i<amountNumber;i++){
+            var status = [0,1];
+            var sufa = status[Math.floor(Math.random() * status.length)];
+            sufaList.push(sufa);
+            checkLastThreeElements(sufaList);//没有意义，可以控制生成率
+            sufa = sufaList[sufaList.length-1];
+            var randAmountElement = ckAmountArr[Math.floor(Math.random() * ckAmountArr.length)];
+            let table = document.getElementById("outputTable");
+            let newRow = table.insertRow(table.rows.length);
+            var newCell0=newRow.insertCell(0);
+            newCell0.innerHTML = table.rows.length-1;
+            // newRow.insertCell(0).innerHTML = table.rows.length-1;
+            newRow.insertCell(1).innerHTML = getFloat(randAmountElement,4);
+            var startdate = new Date();
+            var durationInMinutes = randomNum(1,9);
+            var durationInSeconds = randomNum(1,60);
+            startdate.setMinutes(startdate.getMinutes() - durationInMinutes);
+            startdate.setSeconds(startdate.getSeconds() - durationInSeconds);
+            newRow.insertCell(2).innerHTML = formatDateTime(startdate);
+            if(sufa==1){
+                newRow.insertCell(3).innerHTML = formatDateTime(startdate,1);
+                var newCell4=newRow.insertCell(4);
+                newCell4.innerHTML = "成功,已返回";
+                newCell4.className = "td1";
+                newCell0.className = "td1";
+            }else{
+                newRow.insertCell(3).innerHTML = "---";
+                var newCell4=newRow.insertCell(4);
+                newCell4.innerHTML = "未处理";
+                newCell4.className = "td0";
+                newCell0.className = "td0";
+            }
+        }
+        console.log("数据生成完成");
+    };
+    checkLastThreeElements = function(arr){
+        if (arr.length >= 4) {
+            var sArr = arr.slice(-4);
+            var suNumber = sArr.filter((e)=>e===1).length;
+            var faNumber = sArr.filter((e)=>e===0).length;
+            if (suNumber==0 ||faNumber==0) {
+                arr[arr.length-1] = arr[arr.length-1]==1?0:1;
+                return arr;
+            }
+        }
+        var suNumber = arr.filter((e)=>e===1).length;
+        if(suNumber>howMuchSuccessCount){
+            console.log("suNumber:"+suNumber+",howMuchSuccessCount:"+howMuchSuccessCount);
+            arr[arr.length-1] = 0;
+        }
+        return arr;
+    }
+    formatDateTime = function(date,payDate){
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1):date.getMonth()+1) + '-';
+        var D = (date.getDate()< 10 ? '0'+date.getDate():date.getDate())+ ' ';
+        var h = (date.getHours() < 10 ? '0'+date.getHours():date.getHours())+ ':';
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes():date.getMinutes()) + ':';
+        var s = date.getSeconds() < 10 ? '0'+date.getSeconds():date.getSeconds();
+        if(payDate){
+            // var ss = Math.floor(Math.random() * 60);
+            // ss++;
+            var ss = randomNum(10,60);
+            s = Number(s);
+            var sss = s + ss;
+            if(sss>60){
+                s = sss-60;
+                m = Number(m.slice(0, -1));
+                m++;
+                if(m>60){
+                    h = Number(h.slice(0, -1));
+                    h++;
+                    h = h+":";
+                }
+                m = m<10?'0'+m+':':m+':';
+            }else{
+                s = sss;
+            }
+            s = s<10?'0'+s:s;
+        }
+        return Y+M+D+h+m+s;
+    }
+
+    randomNum = function(min, max) {
+        const num = Math.floor(Math.random() * (max - min + 1)) + min
+        return num;
+    }
+
+    const res = randomNum(3,15)
+    console.log("randomNum(3,15):"+res);
+
+    sortTable = function() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("outputTable");
+        switching = true;
+        /* 设置一个循环语句 */
+        while (switching) {
+            // 设置循环结束标记
+            switching = false;
+            rows = table.rows;
+            /* 循环表格的行 */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // 设置元素是否调换位置
+                shouldSwitch = false;
+                /* 获取要比较的元素 */
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+                // x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()
+                let dateX = new Date(x.innerHTML).getTime();
+                let dateY = new Date(y.innerHTML).getTime();
+                // 判断是否将下一个元素与当前元素进行切换
+                if (dateX>dateY) {
+                    // 设置调换元素标记，并结束当前循环
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                /* 如果元素调换位置设置为 true，则进行对调操作 */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+        /*重新生成序号*/
+        rows = table.rows;
+        for (i = 1; i < (rows.length); i++) {
+            rows[i].getElementsByTagName("TD")[0].innerHTML = i;
+        }
+    }
+</script>
+</body>
